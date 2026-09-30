@@ -11,6 +11,11 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
 
     private static let minContentSize = NSSize(width: 320, height: 240)
     private static let maxMagnification: CGFloat = 20
+    private static let wrapSound: NSSound? = {
+        let sound = NSSound(named: "Tink")
+        sound?.volume = 0.4
+        return sound
+    }()
 
     init() {
         let window = NSWindow(
@@ -59,8 +64,7 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.window else { return event }
             switch event.keyCode {
-            case 53:                                  // Esc: leave full screen first, else quit
-                if self.isFullScreen { self.window?.toggleFullScreen(nil) } else { NSApp.terminate(nil) }
+            case 53: NSApp.terminate(nil)            // Esc
             case 36, 76: self.window?.toggleFullScreen(nil)  // Return, keypad Enter
             case 123: self.navigate(by: -1)          // ←
             case 124: self.navigate(by: 1)           // →
@@ -82,7 +86,8 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
     }
 
     private func navigate(by delta: Int) {
-        guard let url = navigator?.step(by: delta) else { return }
+        guard let (url, wrapped) = navigator?.step(by: delta) else { return }
+        if wrapped { Self.wrapSound?.play() }
         display(url)
     }
 

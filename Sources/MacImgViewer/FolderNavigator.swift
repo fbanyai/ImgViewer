@@ -22,8 +22,8 @@ struct FolderNavigator {
         }
     }
 
-    /// Moves by `delta` (wrapping). Re-lists the folder so added/removed files are picked up.
-    mutating func step(by delta: Int) -> URL? {
+    /// Moves by `delta`, wrapping past either end (`wrapped` reports it). Re-lists the folder so added/removed files are picked up.
+    mutating func step(by delta: Int) -> (url: URL, wrapped: Bool)? {
         let currentName = names[index]
         let fresh = Self.imageNames(in: directory)
         guard !fresh.isEmpty else { return nil }
@@ -37,8 +37,9 @@ struct FolderNavigator {
             base = delta > 0 ? insertion - 1 : insertion
         }
         names = fresh
-        index = ((base + delta) % names.count + names.count) % names.count
-        return current
+        let target = base + delta
+        index = (target % names.count + names.count) % names.count
+        return (current, !names.indices.contains(target))
     }
 
     private static func imageNames(in directory: URL) -> [String] {
