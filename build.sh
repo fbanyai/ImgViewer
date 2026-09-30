@@ -1,7 +1,19 @@
 #!/bin/sh
-# Builds build/MacImgViewer.app. Pass --install to copy it to ~/Applications.
+# Builds build/MacImgViewer.app.
+#   --install      also copy it to ~/Applications
+#   --set-default  install, then make it the default app for every supported image type
 set -eu
 cd "$(dirname "$0")"
+
+INSTALL=0
+SET_DEFAULT=0
+for arg in "$@"; do
+    case "$arg" in
+        --install) INSTALL=1 ;;
+        --set-default) INSTALL=1; SET_DEFAULT=1 ;;
+        *) echo "Unknown option: $arg" >&2; exit 1 ;;
+    esac
+done
 
 swift build -c release
 BIN="$(swift build -c release --show-bin-path)/MacImgViewer"
@@ -25,10 +37,15 @@ rm -rf "$ICONSET"
 codesign --force --sign - "$APP"
 echo "Built $APP"
 
-if [ "${1:-}" = "--install" ]; then
+INSTALLED="$HOME/Applications/MacImgViewer.app"
+if [ "$INSTALL" = 1 ]; then
     mkdir -p "$HOME/Applications"
-    rm -rf "$HOME/Applications/MacImgViewer.app"
+    rm -rf "$INSTALLED"
     cp -R "$APP" "$HOME/Applications/"
-    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$HOME/Applications/MacImgViewer.app"
-    echo "Installed to ~/Applications/MacImgViewer.app"
+    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$INSTALLED"
+    echo "Installed to $INSTALLED"
+fi
+
+if [ "$SET_DEFAULT" = 1 ]; then
+    swift scripts/set-default.swift "$INSTALLED"
 fi

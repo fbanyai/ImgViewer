@@ -26,7 +26,7 @@ cd MacImgViewer
 ./build.sh --install
 ```
 
-`build.sh` compiles a release build, assembles `build/MacImgViewer.app`, and ad-hoc signs it. With `--install` it also copies the app to `~/Applications` and registers it with Launch Services. Run `./build.sh` without arguments to build only.
+`build.sh` compiles a release build, assembles `build/MacImgViewer.app`, and ad-hoc signs it. With `--install` it also copies the app to `~/Applications` and registers it with Launch Services; `--set-default` does that and also makes it your default image viewer (see [below](#set-as-default-viewer)). Run `./build.sh` without arguments to build only.
 
 ## Usage
 
@@ -53,26 +53,24 @@ Rolling the wheel away from you always zooms in, regardless of the natural-scrol
 
 ## Set as Default Viewer
 
-Per file type, in Finder: select an image → **Get Info** (⌘I) → **Open with** → **MacImgViewer** → **Change All…**
-
-For all types at once, use [duti](https://github.com/moretension/duti) (`brew install duti`):
+For every supported image type at once:
 
 ```bash
-for ext in jpg jpeg png heic heif avif webp jxl gif tif tiff bmp psd ico tga exr jp2 svg \
-           dng cr2 cr3 nef arw raf orf rw2; do
-  duti -s com.fbanyai.macimgviewer .$ext viewer
-done
-
-duti -x jpg   # verify
+./build.sh --set-default
 ```
 
-Leave out `svg` if you want SVGs to keep opening in your browser. Add `pdf` only if you want to replace Preview for PDFs.
+This installs the app to `~/Applications` and makes it the default for every format ImageIO can decode, plus SVG (61 types on macOS 27). PDFs stay with Preview. It prints a count at the end and exits with an error if any type didn't change.
+
+For a single file type, in Finder: select an image → **Get Info** (⌘I) → **Open with** → **MacImgViewer** → **Change All…**
+
+> `duti -s` does not work for this on recent macOS: it exits cleanly without changing anything. `scripts/set-default.swift` uses `NSWorkspace.setDefaultApplication(at:toOpen:)` instead. `duti -x jpg` still works for checking the result.
 
 ## Project Structure
 
 ```text
 Package.swift                          SwiftPM manifest (macOS 14+, Swift 5 language mode)
-build.sh                               Builds and bundles MacImgViewer.app (--install to copy to ~/Applications)
+build.sh                               Builds and bundles MacImgViewer.app (--install, --set-default)
+scripts/set-default.swift              Sets the installed app as default for all supported image types
 Resources/Info.plist                   Bundle metadata and document types (public.image, SVG, PDF)
 Resources/AppIcon.png                  1024×1024 app icon master (build.sh converts it to .icns)
 Sources/MacImgViewer/

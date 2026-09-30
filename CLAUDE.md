@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 ./build.sh             # release build → build/MacImgViewer.app (ad-hoc signed)
 ./build.sh --install   # also copy to ~/Applications and register with Launch Services
+./build.sh --set-default  # install + make it the default viewer for all supported image types
 swift build            # quick compile check (debug, no .app bundle)
 open -a "$PWD/build/MacImgViewer.app" path/to/image.jpg
 ```
@@ -32,4 +33,4 @@ Key invariants that span files:
 - **Formats:** `ImageLoader.supportedContentTypes` comes from `CGImageSourceCopyTypeIdentifiers()` at runtime, plus SVG and PDF. It drives both the Open panel filter and `FolderNavigator`'s extension filter. Don't hard-code format lists. Multi-frame GIF, PNG and WebP load as `NSImage` so they animate; everything else is decoded with `kCGImageSourceCreateThumbnailWithTransform` at full size so EXIF orientation is applied.
 - **Navigation:** `FolderNavigator` stores file names, not URLs, sorted with `localizedStandardCompare` (Finder order). It re-lists the folder on every step and copes with the current file having been deleted.
 
-Bundle ID `com.fbanyai.macimgviewer` is referenced in `Resources/Info.plist` and in the README's `duti` instructions; keep them in sync.
+`scripts/set-default.swift` (run by `./build.sh --set-default`) duplicates the format list from `ImageLoader.supportedContentTypes`; change both together. It uses `NSWorkspace.setDefaultApplication` because `duti -s` / `LSSetDefaultRoleHandlerForContentType` silently does nothing on this macOS.
