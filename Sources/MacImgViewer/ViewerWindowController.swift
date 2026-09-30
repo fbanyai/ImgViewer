@@ -87,7 +87,11 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
 
     private func navigate(by delta: Int) {
         guard let (url, wrapped) = navigator?.step(by: delta) else { return }
-        if wrapped { Self.wrapSound?.play() }
+        if wrapped {
+            // play() is a no-op while the sound is still playing, so restart it for rapid wraps.
+            Self.wrapSound?.stop()
+            Self.wrapSound?.play()
+        }
         display(url)
     }
 
