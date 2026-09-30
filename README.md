@@ -1,4 +1,4 @@
-# ImgViewer
+# MacImgViewer
 
 A tiny native macOS image viewer: open an image, zoom with the mouse wheel, flip through the folder with the arrow keys, press Esc to quit.
 
@@ -21,20 +21,20 @@ Built with Swift and AppKit — no dependencies, no Xcode project, a single ~170
 ## Installation
 
 ```bash
-git clone https://github.com/fbanyai/ImgViewer.git imgviewer
-cd imgviewer
+git clone https://github.com/fbanyai/ImgViewer.git MacImgViewer
+cd MacImgViewer
 ./build.sh --install
 ```
 
-`build.sh` compiles a release build, assembles `build/ImgViewer.app`, and ad-hoc signs it. With `--install` it also copies the app to `~/Applications` and registers it with Launch Services. Run `./build.sh` without arguments to build only.
+`build.sh` compiles a release build, assembles `build/MacImgViewer.app`, and ad-hoc signs it. With `--install` it also copies the app to `~/Applications` and registers it with Launch Services. Run `./build.sh` without arguments to build only.
 
 ## Usage
 
 ```bash
-open -a ImgViewer ~/Pictures/photo.heic
+open -a MacImgViewer ~/Pictures/photo.heic
 ```
 
-Or right-click an image in Finder → **Open With** → **ImgViewer**. Launching the app with no file shows an Open dialog.
+Or right-click an image in Finder → **Open With** → **MacImgViewer**. Launching the app with no file shows an Open dialog.
 
 ### Controls
 
@@ -53,14 +53,14 @@ Rolling the wheel away from you always zooms in, regardless of the natural-scrol
 
 ## Set as Default Viewer
 
-Per file type, in Finder: select an image → **Get Info** (⌘I) → **Open with** → **ImgViewer** → **Change All…**
+Per file type, in Finder: select an image → **Get Info** (⌘I) → **Open with** → **MacImgViewer** → **Change All…**
 
 For all types at once, use [duti](https://github.com/moretension/duti) (`brew install duti`):
 
 ```bash
 for ext in jpg jpeg png heic heif avif webp jxl gif tif tiff bmp psd ico tga exr jp2 svg \
            dng cr2 cr3 nef arw raf orf rw2; do
-  duti -s com.fbanyai.imgviewer .$ext viewer
+  duti -s com.fbanyai.macimgviewer .$ext viewer
 done
 
 duti -x jpg   # verify
@@ -72,9 +72,10 @@ Leave out `svg` if you want SVGs to keep opening in your browser. Add `pdf` only
 
 ```text
 Package.swift                          SwiftPM manifest (macOS 14+, Swift 5 language mode)
-build.sh                               Builds and bundles ImgViewer.app (--install to copy to ~/Applications)
+build.sh                               Builds and bundles MacImgViewer.app (--install to copy to ~/Applications)
 Resources/Info.plist                   Bundle metadata and document types (public.image, SVG, PDF)
-Sources/ImgViewer/
+Resources/AppIcon.png                  1024×1024 app icon master (build.sh converts it to .icns)
+Sources/MacImgViewer/
   main.swift                           NSApplication bootstrap
   AppDelegate.swift                    File opening (Finder, CLI, Open dialog) and menu
   ViewerWindowController.swift         Window fitting, async loading, key handling
@@ -85,7 +86,7 @@ Sources/ImgViewer/
 
 ## Troubleshooting
 
-- **"ImgViewer would like to access files in your Downloads folder"** — expected the first time you browse a protected folder (Desktop, Documents, Downloads, external/network volumes). The app lists the folder to enable ← / → navigation.
+- **"MacImgViewer would like to access files in your Downloads folder"** — expected the first time you browse a protected folder (Desktop, Documents, Downloads, external/network volumes). The app lists the folder to enable ← / → navigation.
 - **Finder still opens files in the old app** — run `killall Finder`, or re-run `./build.sh --install` if you moved the app.
 - **Small images look tiny** — images display at 1 image pixel per Retina pixel. Zoom in with the wheel.
 

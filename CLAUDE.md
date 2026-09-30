@@ -5,15 +5,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-./build.sh             # release build → build/ImgViewer.app (ad-hoc signed)
+./build.sh             # release build → build/MacImgViewer.app (ad-hoc signed)
 ./build.sh --install   # also copy to ~/Applications and register with Launch Services
 swift build            # quick compile check (debug, no .app bundle)
-open -a "$PWD/build/ImgViewer.app" path/to/image.jpg
+open -a "$PWD/build/MacImgViewer.app" path/to/image.jpg
 ```
 
 There are no tests or linters. The build should stay warning-free.
 
-Features that depend on the bundle (document types, Finder "Open With", TCC folder prompts) only work from the `.app` that `build.sh` produces, not from `swift run`. `Info.plist` lives in `Resources/` and is copied in by `build.sh`; SwiftPM does not process it.
+Features that depend on the bundle (document types, Finder "Open With", TCC folder prompts) only work from the `.app` that `build.sh` produces, not from `swift run`. `Info.plist` and `AppIcon.png` live in `Resources/`; `build.sh` copies the plist and converts the PNG to `AppIcon.icns` (sips + iconutil). SwiftPM does not process either.
 
 ## Architecture
 
@@ -32,4 +32,4 @@ Key invariants that span files:
 - **Formats:** `ImageLoader.supportedContentTypes` comes from `CGImageSourceCopyTypeIdentifiers()` at runtime, plus SVG and PDF. It drives both the Open panel filter and `FolderNavigator`'s extension filter. Don't hard-code format lists. Multi-frame GIF, PNG and WebP load as `NSImage` so they animate; everything else is decoded with `kCGImageSourceCreateThumbnailWithTransform` at full size so EXIF orientation is applied.
 - **Navigation:** `FolderNavigator` stores file names, not URLs, sorted with `localizedStandardCompare` (Finder order). It re-lists the folder on every step and copes with the current file having been deleted.
 
-Bundle ID `com.fbanyai.imgviewer` is referenced in `Resources/Info.plist` and in the README's `duti` instructions; keep them in sync.
+Bundle ID `com.fbanyai.macimgviewer` is referenced in `Resources/Info.plist` and in the README's `duti` instructions; keep them in sync.

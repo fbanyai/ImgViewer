@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>ImgViewer</string>
+    <string>MacImgViewer</string>
     <key>CFBundleIdentifier</key>
-    <string>com.fbanyai.imgviewer</string>
+    <string>com.fbanyai.macimgviewer</string>
     <key>CFBundleName</key>
-    <string>ImgViewer</string>
+    <string>MacImgViewer</string>
     <key>CFBundleDisplayName</key>
-    <string>ImgViewer</string>
+    <string>MacImgViewer</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -20,6 +20,8 @@
     <string>14.0</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.photography</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>NSHighResolutionCapable</key>
@@ -42,14 +44,14 @@
         </dict>
     </array>
     <key>NSDesktopFolderUsageDescription</key>
-    <string>ImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
+    <string>MacImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
     <key>NSDocumentsFolderUsageDescription</key>
-    <string>ImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
+    <string>MacImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
     <key>NSDownloadsFolderUsageDescription</key>
-    <string>ImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
+    <string>MacImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
     <key>NSRemovableVolumesUsageDescription</key>
-    <string>ImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
+    <string>MacImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
     <key>NSNetworkVolumesUsageDescription</key>
-    <string>ImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
+    <string>MacImgViewer lists the images in the folder you open so you can browse them with the arrow keys.</string>
 </dict>
 </plist>

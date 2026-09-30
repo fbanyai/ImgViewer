@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "ImgViewer",
+    name: "MacImgViewer",
     platforms: [.macOS(.v14)],
     targets: [
         .executableTarget(
-            name: "ImgViewer",
-            path: "Sources/ImgViewer",
+            name: "MacImgViewer",
+            path: "Sources/MacImgViewer",
             swiftSettings: [.swiftLanguageMode(.v5)]
         )
     ]
