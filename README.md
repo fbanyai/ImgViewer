@@ -45,7 +45,8 @@ Or right-click an image in Finder → **Open With** → **MacImgViewer**. Launch
 | Drag | Pan when zoomed in |
 | Double-click | Reset zoom to fit |
 | ← / → | Previous / next image in the folder |
-| Esc | Quit |
+| Return | Toggle full screen |
+| Esc | Exit full screen, or quit |
 | ⌘O | Open another file |
 | ⌘W / ⌘Q | Quit |
 

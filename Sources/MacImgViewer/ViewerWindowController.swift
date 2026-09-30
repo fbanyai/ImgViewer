@@ -22,6 +22,7 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         window.isRestorable = false
         window.backgroundColor = .black
         window.contentMinSize = Self.minContentSize
+        window.collectionBehavior.insert(.fullScreenPrimary)
         super.init(window: window)
         window.delegate = self
 
@@ -58,7 +59,9 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.window else { return event }
             switch event.keyCode {
-            case 53: NSApp.terminate(nil)            // Esc
+            case 53:                                  // Esc: leave full screen first, else quit
+                if self.isFullScreen { self.window?.toggleFullScreen(nil) } else { NSApp.terminate(nil) }
+            case 36, 76: self.window?.toggleFullScreen(nil)  // Return, keypad Enter
             case 123: self.navigate(by: -1)          // ←
             case 124: self.navigate(by: 1)           // →
             default: return event
@@ -124,8 +127,12 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         window.makeKeyAndOrderFront(nil)
     }
 
+    private var isFullScreen: Bool { window?.styleMask.contains(.fullScreen) ?? false }
+
     /// Sizes the window to the image (shrunk to the screen's usable area, never enlarged) and centers it.
+    /// In full screen the window keeps its frame and only the zoom is reset.
     private func fitWindow(on screen: NSScreen?) {
+        if isFullScreen { return zoomToFit() }
         guard let window, let screen else { return }
         let visible = screen.visibleFrame
         let maxContent = window.contentRect(forFrameRect: visible).size
@@ -156,6 +163,15 @@ final class ViewerWindowController: NSWindowController, NSWindowDelegate {
         let fit = fitScale(in: scrollView.contentView.frame.size)
         scrollView.minMagnification = fit
         if scrollView.magnification < fit { scrollView.magnification = fit }
+    }
+
+    func windowDidEnterFullScreen(_ notification: Notification) {
+        zoomToFit()
+    }
+
+    /// The restored frame belongs to whichever image was showing on entry; refit to the current one.
+    func windowDidExitFullScreen(_ notification: Notification) {
+        fitWindow(on: window?.screen)
     }
 
     private static func screenUnderMouse() -> NSScreen? {
