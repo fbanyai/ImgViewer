@@ -21,7 +21,7 @@ Built with Swift and AppKit — no dependencies, no Xcode project, a single ~170
 ## Installation
 
 ```bash
-git clone https://github.com/fbanyai/ImgViewer.git MacImgViewer
+git clone https://github.com/fbanyai/MacImgViewer.git MacImgViewer
 cd MacImgViewer
 ./build.sh --install
 ```
